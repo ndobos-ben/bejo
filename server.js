@@ -156,7 +156,7 @@ class GatewayServer {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>J1BTNL CONFIG SNI</title>
+  <title>NDOBOS CONFIG SNI</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -189,7 +189,7 @@ class GatewayServer {
         </div>
         <div class="flex flex-col">
           <h1 class="text-base sm:text-lg font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-500 uppercase leading-none">
-            J1BTNL <span class="font-light text-slate-300">CONFIG</span>
+            NDOBOS <span class="font-light text-slate-300">CONFIG</span>
           </h1>
           <p class="text-[8px] sm:text-[9px] uppercase tracking-[0.15em] text-emerald-500/70 font-bold mt-1">SNI Injection Protocol</p>
         </div>
@@ -278,9 +278,9 @@ class GatewayServer {
                 <option value="/SG">🇸🇬 /SG (Singapore)</option>
                 <option value="/JP">🇯🇵 /JP (Japan)</option>
                 <option value="/US">🇺🇸 /US (USA)</option>
-				<option value="/EUROPE">🇪🇺 /EUROPE</option>
+                <option value="/EUROPE">🇪🇺 /EUROPE</option>
                 <option value="/ASIA">🌏 /ASIA (Asia Region)</option>
-				<option value="/ALL">🌍 /ALL (Rotate Global)</option>
+                <option value="/ALL">🌍 /ALL (Rotate Global)</option>
                 <option value="/AMERICA">🌎 /AMERICA</option>
               </select>
               <input id="pathInput" type="text" value="/ID" 
@@ -313,7 +313,7 @@ class GatewayServer {
 
           <div>
             <label class="text-xs text-slate-400 font-medium mb-1.5 block">Nama / Remark</label>
-            <input id="remarkInput" type="text" value="J1BTNL" 
+            <input id="remarkInput" type="text" value="NDOBOS" 
                    class="w-full bg-[#0c130e] border border-emerald-900/50 rounded-lg px-3 py-2 text-sm text-white font-mono focus:border-emerald-500 focus:outline-none transition">
           </div>
 
@@ -373,7 +373,7 @@ class GatewayServer {
 
   <footer class="border-t border-emerald-950 bg-[#040605] px-4 sm:px-6 py-4 sm:py-5 text-center text-[10px] sm:text-xs text-slate-600">
     <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3">
-      <p>&copy; ${new Date().getFullYear()} J1BTNL CONFIG SNI. ALL SYSTEM VECTORS OPERATIONAL.</p>
+      <p>&copy; ${new Date().getFullYear()} NDOBOS CONFIG SNI. ALL SYSTEM VECTORS OPERATIONAL.</p>
       <p class="flex items-center gap-1 sm:gap-2"><i class="fa-solid fa-shield-check text-emerald-500/60"></i> SECURED BY END-TO-END KERNEL TUNNEL</p>
     </div>
   </footer>
@@ -480,7 +480,7 @@ class GatewayServer {
         const port = portEl.value.trim() || '443';
         const path = pathEl.value.trim() || '/ALL';
         const sni = sniEl.value.trim() || 'business.whatsapp.com';
-        const remark = remarkEl.value.trim() || 'J1BTNL';
+        const remark = remarkEl.value.trim() || 'NDOBOS';
 
         const encodedPath = encodeURIComponent(path);
         const encodedRemark = encodeURIComponent(remark);
