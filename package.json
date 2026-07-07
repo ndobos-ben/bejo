@@ -1,5 +1,5 @@
 {
-  "name": "mediafairy-tunnel",
+  "name": "ndobos-tunnel",
   "version": "1.0.0",
   "description": "VLESS/Trojan WebSocket Backend",
   "main": "server.js",
