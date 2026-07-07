@@ -262,7 +262,7 @@ class GatewayServer {
                 <div class="dot zoom"></div>
               </div>
               <div class="brand-title">
-                <span class="brand-media">MEDIA</span><span class="brand-fairy">FAIRY</span>
+                <span class="brand-ndo">NDO</span><span class="brand-bos">BOS</span>
               </div>
               <div class="status-badge">
                 <div class="pulse-dot"></div>
@@ -353,9 +353,9 @@ class GatewayServer {
               let uri = '';
 
               if (type === 'vless') {
-                uri = \`vless://\${uuid}@\${host}:443?encryption=none&security=tls&sni=\${host}&type=ws&host=\${host}&path=%2Fvless-mediafairy#MEDIAFAIRY-VLESS\`;
+                uri = \`vless://\${uuid}@\${host}:443?encryption=none&security=tls&sni=\${host}&type=ws&host=\${host}&path=%2Fvless-ndobos#NDOBOS-VLESS\`;
               } else if (type === 'trojan') {
-                uri = \`trojan://\${uuid}@\${host}:443?security=tls&sni=\${host}&type=ws&host=\${host}&path=%2Ftrojan-mediafairy#MEDIAFAIRY-TROJAN\`;
+                uri = \`trojan://\${uuid}@\${host}:443?security=tls&sni=\${host}&type=ws&host=\${host}&path=%2Ftrojan-ndobos#NDOBOS-TROJAN\`;
               }
 
               const outputBox = document.getElementById('config-output');
@@ -400,7 +400,7 @@ class GatewayServer {
       const parsedUrl = url.parse(request.url, true);
       const path = parsedUrl.pathname;
 
-      if (path === '/vless-mediafairy' || path === '/trojan-mediafairy') {
+      if (path === '/vless-ndobos' || path === '/trojan-ndobos') {
         await this.websocketHandler(ws);
         return;
       }
