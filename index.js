@@ -120,11 +120,11 @@ async function extractDomains() {
 }
 
 async function generateLinks(domain) {
-  const vmessObj = { v: '2', ps: `${NAME}-CDN-VMESS`, add: CFIP, port: CFPORT, id: UUID, aid: '0', scy: 'auto', net: 'ws', type: 'none', host: domain, path: '/vmess-ndobos', tls: 'tls', sni: domain, alpn: '', fp: 'firefox' };
+  const vmessObj = { v: '2', ps: `${NAME}-CDN-VMESS`, add: CFIP, port: CFPORT, id: UUID, aid: '0', scy: 'auto', net: 'ws', type: 'none', host: domain, path: '/vmess-mediafairy', tls: 'tls', sni: domain, alpn: '', fp: 'firefox' };
   
-  argoConfigs.vless = `vless://${UUID}@${CFIP}:${CFPORT}?encryption=none&security=tls&sni=${domain}&fp=firefox&type=ws&host=${domain}&path=%2Fvless-ndobos#${NAME}-CDN-VLESS`;
+  argoConfigs.vless = `vless://${UUID}@${CFIP}:${CFPORT}?encryption=none&security=tls&sni=${domain}&fp=firefox&type=ws&host=${domain}&path=%2Fvless-mediafairy#${NAME}-CDN-VLESS`;
   argoConfigs.vmess = `vmess://${Buffer.from(JSON.stringify(vmessObj)).toString('base64')}`;
-  argoConfigs.trojan = `trojan://${UUID}@${CFIP}:${CFPORT}?security=tls&sni=${domain}&fp=firefox&type=ws&host=${domain}&path=%2Ftrojan-ndobos#${NAME}-CDN-TROJAN`;
+  argoConfigs.trojan = `trojan://${UUID}@${CFIP}:${CFPORT}?security=tls&sni=${domain}&fp=firefox&type=ws&host=${domain}&path=%2Ftrojan-mediafairy#${NAME}-CDN-TROJAN`;
   
   const subTxt = `${argoConfigs.vless}\n${argoConfigs.vmess}\n${argoConfigs.trojan}`;
   fs.writeFileSync(subFilePath, subTxt);
@@ -204,8 +204,8 @@ class HybridServer {
       const host = req.headers.host;
       const payload = {
         native: {
-          vless: `vless://${UUID}@${host}:443?encryption=none&security=tls&sni=${host}&fp=firefox&type=ws&host=${host}&path=%2Fvless-ndobos#${NAME}-SNI-VLESS`,
-          trojan: `trojan://${UUID}@${host}:443?security=tls&sni=${host}&fp=firefox&type=ws&host=${host}&path=%2Ftrojan-ndobos#${NAME}-SNI-TROJAN`
+          vless: `vless://${UUID}@${host}:443?encryption=none&security=tls&sni=${host}&fp=firefox&type=ws&host=${host}&path=%2Fvless-mediafairy#${NAME}-SNI-VLESS`,
+          trojan: `trojan://${UUID}@${host}:443?security=tls&sni=${host}&fp=firefox&type=ws&host=${host}&path=%2Ftrojan-mediafairy#${NAME}-SNI-TROJAN`
         },
         argo: {
           vless: argoConfigs.vless || 'Menunggu Cloudflare Argo Tunnel aktif...',
@@ -353,7 +353,7 @@ class HybridServer {
           <div class="window-container">
             <div class="window-header">
               <div class="mac-dots"><div class="dot close"></div><div class="dot minimize"></div><div class="dot zoom"></div></div>
-              <div class="brand-title"><span class="brand-media">NDO</span><span class="brand-fairy">BOS</span></div>
+              <div class="brand-title"><span class="brand-media">MEDIA</span><span class="brand-fairy">FAIRY</span></div>
               <div class="status-badge"><div class="pulse-dot"></div>RUNNING</div>
             </div>
 
@@ -377,12 +377,12 @@ class HybridServer {
                 <div class="card">
                   <div class="section-label">Download</div>
                   <div class="card-value" id="dl-total">0 B</div>
-                  <div class="live-speed down" id="dl-speed">↓ 0 B/s</div>
+                  <div class="live-speed down" id="dl-speed">â†“ 0 B/s</div>
                 </div>
                 <div class="card">
                   <div class="section-label">Upload</div>
                   <div class="card-value" id="ul-total">0 B</div>
-                  <div class="live-speed up" id="ul-speed">↑ 0 B/s</div>
+                  <div class="live-speed up" id="ul-speed">â†‘ 0 B/s</div>
                 </div>
               </div>
 
@@ -400,12 +400,12 @@ class HybridServer {
               </div>
 
               <div class="generator-section">
-                <div class="group-title">⚡ BUG SNI</div>
+                <div class="group-title">âš¡ BUG SNI</div>
                 <div class="btn-group-native">
                   <button class="btn-vless" onclick="generate('native', 'vless')">VLESS</button>
                   <button class="btn-trojan" onclick="generate('native', 'trojan')">TROJAN</button>
                 </div>
-                <div class="group-title">🚀 BUG CDN</div>
+                <div class="group-title">ðŸš€ BUG CDN</div>
                 <div class="btn-group-argo">
                   <button class="btn-vless" onclick="generate('argo', 'vless')">VLESS</button>
                   <button class="btn-vmess" onclick="generate('argo', 'vmess')">VMESS</button>
@@ -414,3 +414,264 @@ class HybridServer {
                 <div class="output-wrapper">
                   <input type="text" id="config-output" readonly placeholder="Pilih salah satu konfigurasi di atas..." />
                   <button class="btn-copy" id="copy-btn" onclick="copyConfig()">Copy</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <script>
+            function formatBytes(bytes) {
+              if (bytes === 0) return '0 B'; const k = 1024, sizes = ['B', 'KB', 'MB', 'GB', 'TB'], i = Math.floor(Math.log(bytes) / Math.log(k));
+              return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+            function formatTime(ts) {
+              const d = Math.floor(ts/86400), h = Math.floor((ts%86400)/3600), m = Math.floor((ts%3600)/60), s = ts%60;
+              return (d>0?d+'d ':'') + String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+            }
+
+            // Chart Configuration
+            const canvas = document.getElementById('trafficChart');
+            const ctx = canvas.getContext('2d');
+            const maxPoints = 60;
+            let rxHistory = new Array(maxPoints).fill(0);
+            let txHistory = new Array(maxPoints).fill(0);
+            let lastRx = 0, lastTx = 0, isFirstRender = true;
+
+            function drawChart() {
+              const rect = canvas.parentElement.getBoundingClientRect();
+              canvas.width = rect.width * window.devicePixelRatio;
+              canvas.height = rect.height * window.devicePixelRatio;
+              ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+              
+              const w = rect.width; const h = rect.height;
+              ctx.clearRect(0, 0, w, h);
+
+              // Grid lines
+              ctx.strokeStyle = '#1f1f1f'; ctx.lineWidth = 1;
+              ctx.beginPath(); ctx.moveTo(0, h/2); ctx.lineTo(w, h/2); ctx.stroke();
+              ctx.beginPath(); ctx.moveTo(w/2, 0); ctx.lineTo(w/2, h); ctx.stroke();
+
+              const maxVal = Math.max(...rxHistory, ...txHistory, 1024); // Minimal 1KB scale
+              
+              function renderLine(data, color, shadowColor) {
+                ctx.beginPath();
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = shadowColor;
+                
+                for(let i=0; i<data.length; i++) {
+                  const x = (i / (maxPoints - 1)) * w;
+                  const y = h - ((data[i] / maxVal) * h * 0.9); // 10% padding top
+                  if(i === 0) ctx.moveTo(x, y);
+                  else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+                ctx.shadowBlur = 0; // Reset
+              }
+
+              renderLine(rxHistory, '#00df89', 'rgba(0, 223, 137, 0.5)'); // Green RX
+              renderLine(txHistory, '#0088FF', 'rgba(0, 136, 255, 0.5)'); // Blue TX
+            }
+
+            async function refreshDashboardStats() {
+              try {
+                const res = await fetch('/api/stats'); const data = await res.json();
+                
+                document.getElementById('uptime-field').innerText = formatTime(data.uptime);
+                
+                // Update CPU & RAM
+                document.getElementById('cpu-val').innerText = data.cpu + '%';
+                document.getElementById('cpu-bar').style.width = data.cpu + '%';
+                document.getElementById('cpu-bar').style.backgroundColor = data.cpu > 80 ? 'var(--status-red)' : 'var(--accent-cyan)';
+                
+                document.getElementById('ram-val').innerText = data.ram + '%';
+                document.getElementById('ram-bar').style.width = data.ram + '%';
+                document.getElementById('ram-bar').style.backgroundColor = data.ram > 85 ? 'var(--status-red)' : 'var(--accent-purple)';
+
+                // Calculate Speed
+                let rxSpeed = 0, txSpeed = 0;
+                if (!isFirstRender) {
+                  rxSpeed = Math.max(0, data.rx - lastRx);
+                  txSpeed = Math.max(0, data.tx - lastTx);
+                }
+                isFirstRender = false;
+                lastRx = data.rx; lastTx = data.tx;
+
+                // Update Text
+                document.getElementById('dl-total').innerText = formatBytes(data.rx);
+                document.getElementById('ul-total').innerText = formatBytes(data.tx);
+                document.getElementById('dl-speed').innerText = 'â†“ ' + formatBytes(rxSpeed) + '/s';
+                document.getElementById('ul-speed').innerText = 'â†‘ ' + formatBytes(txSpeed) + '/s';
+
+                // Update Chart
+                rxHistory.push(rxSpeed); rxHistory.shift();
+                txHistory.push(txSpeed); txHistory.shift();
+                drawChart();
+
+              } catch (e) {}
+            }
+            
+            refreshDashboardStats(); setInterval(refreshDashboardStats, 1000);
+            window.addEventListener('resize', drawChart);
+
+            async function generate(network, protocol) {
+              const outputEl = document.getElementById('config-output');
+              outputEl.value = 'Loading...'; document.getElementById('copy-btn').innerText = 'Copy';
+              try {
+                const res = await fetch('/api/config'); const data = await res.json();
+                outputEl.value = data[network][protocol];
+              } catch (e) { outputEl.value = 'Gagal mengambil konfigurasi.'; }
+            }
+
+            function copyConfig() {
+              const el = document.getElementById('config-output');
+              if (!el.value || el.value.includes('Loading')) return; 
+              el.select(); el.setSelectionRange(0, 99999);
+              navigator.clipboard.writeText(el.value).then(() => {
+                const btn = document.getElementById('copy-btn'); btn.innerText = 'Copied!';
+                setTimeout(() => { if (btn.innerText === 'Copied!') btn.innerText = 'Copy'; }, 2000);
+              });
+            }
+          </script>
+        </body>
+        </html>
+      `);
+      return;
+    }
+    res.writeHead(404, { 'Content-Type': 'text/plain' }); res.end('Not Found');
+  }
+
+  // ==================== WEBSOCKET HANDLERS ====================
+  async handleWebSocketConnection(ws, request) {
+    try {
+      const path = url.parse(request.url, true).pathname;
+      if (path === '/vless-mediafairy' || path === '/trojan-mediafairy' || path === '/vmess-mediafairy') {
+        return await this.websocketHandler(ws);
+      }
+      ws.close(1000, "Invalid Path");
+    } catch (err) { ws.close(1011); }
+  }
+
+  async websocketHandler(ws) {
+    let remoteSocketWrapper = { value: null };
+    ws.on('message', async (message) => {
+      try {
+        const chunk = Buffer.from(message);
+        this.stats.rx += chunk.length;
+        if (remoteSocketWrapper.value) return remoteSocketWrapper.value.write(chunk);
+
+        const protocol = await this.protocolSniffer(chunk);
+        const protocolHeader = protocol === horse ? this.readHorseHeader(chunk) : this.readFlashHeader(chunk); 
+        if (protocolHeader.hasError) throw new Error(protocolHeader.message);
+
+        if (protocolHeader.isUDP) return await this.handleUDPOutbound(protocolHeader.addressRemote, protocolHeader.portRemote, chunk.slice(protocolHeader.rawDataIndex), ws, protocolHeader.version);
+        this.handleTCPOutBound(remoteSocketWrapper, protocolHeader.addressRemote, protocolHeader.portRemote, protocolHeader.rawClientData, ws, protocolHeader.version);
+      } catch (err) { ws.close(1011, err.message); }
+    });
+    ws.on('close', () => { if (remoteSocketWrapper.value) remoteSocketWrapper.value.end(); this.cleanupUDPConnections(ws); });
+    ws.on('error', () => this.cleanupUDPConnections(ws));
+  }
+
+  async protocolSniffer(buffer) {
+    if (buffer.length >= 62) {
+      const hd = buffer.slice(56, 60);
+      if (hd[0] === 0x0d && hd[1] === 0x0a && [0x01, 0x03, 0x7f].includes(hd[2]) && [0x01, 0x03, 0x04].includes(hd[3])) return horse;
+    }
+    return flash; 
+  }
+
+  async handleTCPOutBound(remoteSocket, addressRemote, portRemote, rawClientData, webSocket, responseHeader) {
+    try {
+      const tcpSocket = net.createConnection({ host: addressRemote, port: portRemote }, () => tcpSocket.write(rawClientData));
+      remoteSocket.value = tcpSocket;
+      tcpSocket.on('close', () => webSocket.close());
+      tcpSocket.on('error', () => webSocket.close());
+      
+      let header = responseHeader;
+      tcpSocket.on('data', (chunk) => {
+        this.stats.tx += chunk.length;
+        if (webSocket.readyState !== WS_READY_STATE_OPEN) return tcpSocket.destroy();
+        if (header) { webSocket.send(Buffer.concat([Buffer.from(header), chunk])); header = null; } 
+        else webSocket.send(chunk);
+      });
+    } catch (error) { webSocket.close(); }
+  }
+
+  async handleUDPOutbound(targetAddress, targetPort, dataChunk, webSocket, responseHeader) {
+    return new Promise((resolve) => {
+      try {
+        let header = responseHeader;
+        const key = `${targetAddress}:${targetPort}:${Date.now()}`;
+        const udpSocket = dgram.createSocket('udp4');
+        
+        this.activeUDPConnections.set(key, { socket: udpSocket, webSocket });
+        udpSocket.on('error', () => { try { udpSocket.close(); } catch (_) {} this.activeUDPConnections.delete(key); });
+        udpSocket.send(dataChunk, targetPort, targetAddress);
+        
+        udpSocket.on('message', (message) => {
+          this.stats.tx += message.length;
+          if (webSocket.readyState === WS_READY_STATE_OPEN) {
+            if (header) { webSocket.send(Buffer.concat([Buffer.from(header), message])); header = null; } 
+            else webSocket.send(message);
+          }
+        });
+        
+        let timeout = setTimeout(() => { try { udpSocket.close(); } catch (_) {} this.activeUDPConnections.delete(key); }, 30000);
+        udpSocket.on('message', () => { clearTimeout(timeout); timeout = setTimeout(() => { try { udpSocket.close(); } catch (_) {} this.activeUDPConnections.delete(key); }, 30000); });
+      } catch (e) {}
+    });
+  }
+
+  cleanupUDPConnections(webSocket) {
+    for (const [key, conn] of this.activeUDPConnections.entries()) {
+      if (conn.webSocket === webSocket) { try { conn.socket.close(); } catch (_) {} this.activeUDPConnections.delete(key); }
+    }
+  }
+
+  readFlashHeader(buffer) {
+    const v = buffer[0], optLen = buffer[17], cmd = buffer[18 + optLen], portIdx = 18 + optLen + 1;
+    if (cmd !== 1 && cmd !== 2) return { hasError: true, message: "cmd unsupported" };
+    const port = buffer.readUInt16BE(portIdx), addrType = buffer[portIdx + 2];
+    let addrLen = 0, addrIdx = portIdx + 3, addr = "";
+    
+    if (addrType === 1) { addrLen = 4; addr = Array.from(buffer.slice(addrIdx, addrIdx + addrLen)).join("."); }
+    else if (addrType === 2) { addrLen = buffer[addrIdx]; addrIdx++; addr = buffer.slice(addrIdx, addrIdx + addrLen).toString(); }
+    else if (addrType === 3) { addrLen = 16; addr = Array.from({length: 8}, (_, i) => buffer.readUInt16BE(addrIdx + i*2).toString(16)).join(":"); }
+    else return { hasError: true };
+
+    return { hasError: false, addressRemote: addr, portRemote: port, rawDataIndex: addrIdx + addrLen, rawClientData: buffer.slice(addrIdx + addrLen), version: Buffer.from([v, 0]), isUDP: cmd === 2 };
+  }
+
+  readHorseHeader(buffer) {
+    const data = buffer.slice(58);
+    if (data.length < 6 || (data[0] !== 1 && data[0] !== 3)) return { hasError: true };
+    const addrType = data[1];
+    let addrLen = 0, addrIdx = 2, addr = "";
+    
+    if (addrType === 1) { addrLen = 4; addr = Array.from(data.slice(addrIdx, addrIdx + addrLen)).join("."); }
+    else if (addrType === 3) { addrLen = data[addrIdx]; addrIdx++; addr = data.slice(addrIdx, addrIdx + addrLen).toString(); }
+    else if (addrType === 4) { addrLen = 16; addr = Array.from({length: 8}, (_, i) => data.readUInt16BE(addrIdx + i*2).toString(16)).join(":"); }
+    else return { hasError: true };
+
+    const portIdx = addrIdx + addrLen;
+    return { hasError: false, addressRemote: addr, portRemote: data.readUInt16BE(portIdx), rawDataIndex: portIdx + 4, rawClientData: data.slice(portIdx + 4), version: null, isUDP: data[0] === 3 };
+  }
+
+  start(port) {
+    this.httpServer = http.createServer((req, res) => this.handleHttpRequest(req, res));
+    this.wss = new WebSocket.Server({ server: this.httpServer, perMessageDeflate: false });
+    this.wss.on('connection', (ws, req) => this.handleWebSocketConnection(ws, req));
+    this.httpServer.listen(port, '0.0.0.0', () => console.log(`[SYSTEM] Hybrid Gateway Active on Port ${port}`));
+  }
+}
+
+// ==================== BOOT SEQUENCE ====================
+(async () => {
+  console.log('[SYSTEM] Initializing Hybrid Core...');
+  const server = new HybridServer();
+  server.start(PORT);
+  startBackgroundServices().catch(err => console.error('[SYSTEM] Background service error:', err));
+})();
