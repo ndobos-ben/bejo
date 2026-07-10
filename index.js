@@ -377,12 +377,12 @@ class HybridServer {
                 <div class="card">
                   <div class="section-label">Download</div>
                   <div class="card-value" id="dl-total">0 B</div>
-                  <div class="live-speed down" id="dl-speed">â†“ 0 B/s</div>
+                  <div class="live-speed down" id="dl-speed">“ 0 B/s</div>
                 </div>
                 <div class="card">
                   <div class="section-label">Upload</div>
                   <div class="card-value" id="ul-total">0 B</div>
-                  <div class="live-speed up" id="ul-speed">â†‘ 0 B/s</div>
+                  <div class="live-speed up" id="ul-speed">‘ 0 B/s</div>
                 </div>
               </div>
 
@@ -503,8 +503,8 @@ class HybridServer {
                 // Update Text
                 document.getElementById('dl-total').innerText = formatBytes(data.rx);
                 document.getElementById('ul-total').innerText = formatBytes(data.tx);
-                document.getElementById('dl-speed').innerText = 'â†“ ' + formatBytes(rxSpeed) + '/s';
-                document.getElementById('ul-speed').innerText = 'â†‘ ' + formatBytes(txSpeed) + '/s';
+                document.getElementById('dl-speed').innerText = '“ ' + formatBytes(rxSpeed) + '/s';
+                document.getElementById('ul-speed').innerText = '‘ ' + formatBytes(txSpeed) + '/s';
 
                 // Update Chart
                 rxHistory.push(rxSpeed); rxHistory.shift();
