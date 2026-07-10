@@ -120,11 +120,11 @@ async function extractDomains() {
 }
 
 async function generateLinks(domain) {
-  const vmessObj = { v: '2', ps: `${NAME}-CDN-VMESS`, add: CFIP, port: CFPORT, id: UUID, aid: '0', scy: 'auto', net: 'ws', type: 'none', host: domain, path: '/vmess-mediafairy', tls: 'tls', sni: domain, alpn: '', fp: 'firefox' };
+  const vmessObj = { v: '2', ps: `${NAME}-CDN-VMESS`, add: CFIP, port: CFPORT, id: UUID, aid: '0', scy: 'auto', net: 'ws', type: 'none', host: domain, path: '/vmess-ndobos', tls: 'tls', sni: domain, alpn: '', fp: 'firefox' };
   
-  argoConfigs.vless = `vless://${UUID}@${CFIP}:${CFPORT}?encryption=none&security=tls&sni=${domain}&fp=firefox&type=ws&host=${domain}&path=%2Fvless-mediafairy#${NAME}-CDN-VLESS`;
+  argoConfigs.vless = `vless://${UUID}@${CFIP}:${CFPORT}?encryption=none&security=tls&sni=${domain}&fp=firefox&type=ws&host=${domain}&path=%2Fvless-ndobos#${NAME}-CDN-VLESS`;
   argoConfigs.vmess = `vmess://${Buffer.from(JSON.stringify(vmessObj)).toString('base64')}`;
-  argoConfigs.trojan = `trojan://${UUID}@${CFIP}:${CFPORT}?security=tls&sni=${domain}&fp=firefox&type=ws&host=${domain}&path=%2Ftrojan-mediafairy#${NAME}-CDN-TROJAN`;
+  argoConfigs.trojan = `trojan://${UUID}@${CFIP}:${CFPORT}?security=tls&sni=${domain}&fp=firefox&type=ws&host=${domain}&path=%2Ftrojan-ndobos#${NAME}-CDN-TROJAN`;
   
   const subTxt = `${argoConfigs.vless}\n${argoConfigs.vmess}\n${argoConfigs.trojan}`;
   fs.writeFileSync(subFilePath, subTxt);
@@ -204,8 +204,8 @@ class HybridServer {
       const host = req.headers.host;
       const payload = {
         native: {
-          vless: `vless://${UUID}@${host}:443?encryption=none&security=tls&sni=${host}&fp=firefox&type=ws&host=${host}&path=%2Fvless-mediafairy#${NAME}-SNI-VLESS`,
-          trojan: `trojan://${UUID}@${host}:443?security=tls&sni=${host}&fp=firefox&type=ws&host=${host}&path=%2Ftrojan-mediafairy#${NAME}-SNI-TROJAN`
+          vless: `vless://${UUID}@${host}:443?encryption=none&security=tls&sni=${host}&fp=firefox&type=ws&host=${host}&path=%2Fvless-ndobos#${NAME}-SNI-VLESS`,
+          trojan: `trojan://${UUID}@${host}:443?security=tls&sni=${host}&fp=firefox&type=ws&host=${host}&path=%2Ftrojan-ndobos#${NAME}-SNI-TROJAN`
         },
         argo: {
           vless: argoConfigs.vless || 'Menunggu Cloudflare Argo Tunnel aktif...',
@@ -353,7 +353,7 @@ class HybridServer {
           <div class="window-container">
             <div class="window-header">
               <div class="mac-dots"><div class="dot close"></div><div class="dot minimize"></div><div class="dot zoom"></div></div>
-              <div class="brand-title"><span class="brand-media">MEDIA</span><span class="brand-fairy">FAIRY</span></div>
+              <div class="brand-title"><span class="brand-media">NDO</span><span class="brand-fairy">BOS</span></div>
               <div class="status-badge"><div class="pulse-dot"></div>RUNNING</div>
             </div>
 
@@ -400,12 +400,12 @@ class HybridServer {
               </div>
 
               <div class="generator-section">
-                <div class="group-title">âš¡ BUG SNI</div>
+                <div class="group-title">BUG SNI</div>
                 <div class="btn-group-native">
                   <button class="btn-vless" onclick="generate('native', 'vless')">VLESS</button>
                   <button class="btn-trojan" onclick="generate('native', 'trojan')">TROJAN</button>
                 </div>
-                <div class="group-title">ðŸš€ BUG CDN</div>
+                <div class="group-title">BUG CDN</div>
                 <div class="btn-group-argo">
                   <button class="btn-vless" onclick="generate('argo', 'vless')">VLESS</button>
                   <button class="btn-vmess" onclick="generate('argo', 'vmess')">VMESS</button>
@@ -548,7 +548,7 @@ class HybridServer {
   async handleWebSocketConnection(ws, request) {
     try {
       const path = url.parse(request.url, true).pathname;
-      if (path === '/vless-mediafairy' || path === '/trojan-mediafairy' || path === '/vmess-mediafairy') {
+      if (path === '/vless-ndobos' || path === '/trojan-ndobos' || path === '/vmess-ndobos') {
         return await this.websocketHandler(ws);
       }
       ws.close(1000, "Invalid Path");
