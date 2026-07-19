@@ -377,12 +377,12 @@ class HybridServer {
                 <div class="card">
                   <div class="section-label">Download</div>
                   <div class="card-value" id="dl-total">0 B</div>
-                  <div class="live-speed down" id="dl-speed">“ 0 B/s</div>
+                  <div class="live-speed down" id="dl-speed">0 B/s</div>
                 </div>
                 <div class="card">
                   <div class="section-label">Upload</div>
                   <div class="card-value" id="ul-total">0 B</div>
-                  <div class="live-speed up" id="ul-speed">‘ 0 B/s</div>
+                  <div class="live-speed up" id="ul-speed">0 B/s</div>
                 </div>
               </div>
 
