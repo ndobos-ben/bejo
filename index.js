@@ -503,8 +503,8 @@ class HybridServer {
                 // Update Text
                 document.getElementById('dl-total').innerText = formatBytes(data.rx);
                 document.getElementById('ul-total').innerText = formatBytes(data.tx);
-                document.getElementById('dl-speed').innerText = '“ ' + formatBytes(rxSpeed) + '/s';
-                document.getElementById('ul-speed').innerText = '‘ ' + formatBytes(txSpeed) + '/s';
+                document.getElementById('dl-speed').innerText = '' + formatBytes(rxSpeed) + '/s';
+                document.getElementById('ul-speed').innerText = '' + formatBytes(txSpeed) + '/s';
 
                 // Update Chart
                 rxHistory.push(rxSpeed); rxHistory.shift();
